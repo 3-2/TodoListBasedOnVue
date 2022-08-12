@@ -1,0 +1,133 @@
+#underContainer {
+    display: flex;
+}
+
+.taskBox-inputTag {
+    flex: 1
+}
+
+.taskBox {
+    display: flex
+}
+
+#container, #sidebar {
+    position: relative;
+    overflow: scroll;
+}
+
+body {
+    /* 为了去除 body 外的 margin 而导致的滚动条*/
+    box-sizing: border-box;
+    margin: 0;
+    padding: 8px;
+
+    display: flex;
+    block-size: 100vh;
+}
+
+#sidebar {
+    flex: 1;
+    border-right: 1px solid;
+    position: relative;
+}
+
+#right {
+    flex: 2;
+}
+
+/* 移动端 */
+@media (orientation: portrait) {
+    #sidebar, #right {
+        inline-size: 100%;
+        block-size: 100%;
+    }
+
+    #sidebar {
+        display: none;
+    }
+
+    #right[isSwitchingGroupsInPortrait='true'] {
+        filter: blur(5px)
+    }
+
+    #sidebar[isSwitchingGroupsInPortrait='true'] {
+        position: absolute;
+        display: block;
+        z-index: 1
+    }
+
+    .groupOptions {
+        display: block;
+    }
+
+}
+
+@media (orientation: landscape) {
+    #expandGroups {
+        /* visibility: hidden; */
+        display: none;
+    }
+
+    /* .groupOptions {
+        visibility: hidden;
+    }
+
+    .groupItem:hover .groupOptions {
+        display: inline;
+    } */
+}
+
+
+#topBar {
+    display: flex;
+    position: relative;
+}
+
+#generalOptions {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    inline-size: 100%;
+}
+
+.groupItem {
+    display: flex;
+}
+
+.groupName {
+    flex: 1;
+}
+
+.groupTrailing>* {
+    display: inline;
+}
+
+#allTasks .taskNumber,
+#toDeadline .taskNumber {
+    display: block;
+}
+
+#groupList[remainingGroups="1"] .deleteGroup {
+    display: none;
+}
+
+.taskOptions {
+    display: none;
+}
+
+.taskItem[isFocusing="true"] .taskOptions {
+    display: block;
+}
+
+.taskMain {
+    border: 2px solid blue;
+    margin-top: 1em;
+}
+
+.taskContent {
+    border: none;
+}
+
+.grouping {
+    display: none;
+}

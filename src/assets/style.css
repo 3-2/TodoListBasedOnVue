@@ -1,3 +1,7 @@
+#completed .taskContent {
+    color: grey
+}
+
 #underContainer {
     display: flex;
 }

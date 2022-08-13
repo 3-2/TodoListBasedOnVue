@@ -4,11 +4,9 @@ const props = defineProps({ taskItem: Object })
 <template>
     <div :class="`taskItem`" :timestamp="taskItem.createdAt" :isfocusing="``">
         <div :class="`taskMain`">
-            <div :class="`taskBox`" @click="">
-                <input :type="`checkbox`" :class="taskItem.isDone" @click="taskItem.isDone = !taskItem.isDone"
-                    :checked="taskItem.isDone">
-                <input :class="[`taskBox-inputTag`, `taskContent`]" :type="`text`" :value="taskItem.text"
-                    @focus="(event)=>{event.target.closest('.taskItem').setAttribute('isfocusing', 'true')}" @blur="(event)=>{event.target.closest('.taskItem').setAttribute('isfocusing', '')}">
+            <div :class="`taskBox`">
+                <input :type="`checkbox`" :class="taskItem.isDone" :checked="taskItem.isDone">
+                <input :class="[`taskBox-inputTag`, `taskContent`]" :type="`text`" :value="taskItem.text">
             </div>
             <div :class="`taskDetails`">
             </div>
@@ -19,3 +17,8 @@ const props = defineProps({ taskItem: Object })
         </div>
     </div>
 </template>
+<style>
+.taskItem[isFocusing="true"] .taskOptions {
+    display: block;
+}
+</style>

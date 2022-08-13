@@ -1,7 +1,6 @@
 <script setup>
 import { reactive, onBeforeMount } from 'vue';
 import TaskContainer from './components/TaskContainer.vue';
-
 let reactiveStorage = reactive({ myStorageCenter: {} });
 function StorageCenter(obj) {
   this.userData = {
@@ -65,11 +64,11 @@ StorageCenter.prototype.findgroupItem = function (groupName) {
     }
   }
 };
-// StorageCenter.prototype.focusOnTask = function (taskItemNode) {
-//   let timestamp = Number(taskItemNode.getAttribute('timestamp'));
-//   reactiveStorage.myStorageCenter.userStatus.focusingTask = timestamp;
-//   taskItemNode.setAttribute('isFocusing', 'true');
-// }
+StorageCenter.prototype.focusOnTask = function (taskItemNode) {
+  let timestamp = Number(taskItemNode.getAttribute('timestamp'));
+  reactiveStorage.myStorageCenter.userStatus.focusingTask = timestamp;
+  taskItemNode.setAttribute('isFocusing', 'true');
+}
 
 function pauseToLocalStorage() {
   localStorage.setItem('pausedData', JSON.stringify(reactiveStorage.myStorageCenter));
@@ -120,6 +119,8 @@ window.addEventListener('orientationchange', function () {
   }
 })
 document.body.addEventListener('input', (event) => {
+  console.log(event.target)
+  console.log(event.currentTarget);
   if (event.target.tagName === 'SELECT') {
     if (event.target.name === 'dropDownGroupOptions') {
       switch (event.target.value) {
@@ -158,97 +159,124 @@ document.body.addEventListener('input', (event) => {
     }
     event.target.value = 'edit' //让下拉菜单回到第一个option
   }
+  if (event.target.classList.contains('deadline')) {
+    let taskItemNode = event.target.closest('.taskItem');
+    let timestamp = Number(taskItemNode.getAttribute('timestamp'));
+    storageCenter.findTaskItemObject(Number(timestamp)).deadline = new Date(event.target.value + ':00.000Z').getTime(); // 转换为Unix时间戳放入存储中心，使用 UTC+0 时间
+  }
 });
+// document.querySelector('.taskContent').addEventListener('focus', event => {
+//   let taskItemNode = event.target.closest('.taskItem');
+//   // let timestamp = Number(taskItemNode.getAttribute('timestamp'));
+//   if (storageCenter.userStatus.focusingTask) { // 如果有任务处于焦点中
+//     if (taskItemNode.getAttribute('isFocusing') === 'false') { // 如果鼠标点到的任务不是聚焦的任务
+//       document.querySelector('.taskItem[isFocusing="true"]').setAttribute('isFocusing', 'false');
+//       storageCenter.focusOnTask(taskItemNode);
+//     }
+//   }
+//   else {
+//     storageCenter.focusOnTask(taskItemNode);
+//   }
+// })
+// document.querySelector('.taskContent').addEventListener('blur', event => {
+//   if (event.target.value == "") {
+//     event.target.value = "空事项"
+//   }
+//   let taskItemNode = event.target.closest('.taskItem');
+//   let timestamp = Number(taskItemNode.getAttribute('timestamp'));
+//   storageCenter.findTaskItemObject(Number(timestamp)).text = event.target.value;
+// })
+
 // 听说这是公交车？
-  document.body.addEventListener('click', function (event) {
-    if (event.target.id === 'expandGroups') {
-      ['sidebar', 'right'].forEach(e => {
-        document.getElementById(e).setAttribute('isSwitchingGroupsInPortrait', 'true');
-      })
+document.body.addEventListener('click', function (event) {
+  // console.log(event.target)
+  if (event.target.id === 'expandGroups') {
+    ['sidebar', 'right'].forEach(e => {
+      document.getElementById(e).setAttribute('isSwitchingGroupsInPortrait', 'true');
+    })
+  }
+  if (event.target.id === 'reset') {
+    localStorage.clear();
+    reactiveStorage.myStorageCenter = {};
+    location.reload();//刷新
+  }
+  if (event.target.id === 'addTask') {
+    let userInput = document.getElementById('addNewTask').value;
+    if (userInput !== '') {
+      let newTaskItem = new TaskItem({ text: userInput }); // 构造新任务的对象
+      if (reactiveStorage.myStorageCenter.userStatus.currentGroup === virtualGroupName) { // 如果活跃分组是虚拟分组「全部事项」
+        newTaskItem.group = reactiveStorage.myStorageCenter.userData.groupItemData[0].name; // 则新任务对象的分组property变为第一个分组
+      }
+      reactiveStorage.myStorageCenter.addTask(newTaskItem);
     }
-    if (event.target.id === 'reset') {
-      localStorage.clear();
-      reactiveStorage.myStorageCenter = {};
-      location.reload();//刷新
-    }
-    if (event.target.id === 'addTask') {
-      let userInput = document.getElementById('addNewTask').value;
+    document.getElementById('addNewTask').value = '';
+  }
+  if (event.target.id === 'addGroup') {
+    let userInput = prompt('请输入新分组的名称');
+    let flag = true; // 很C语言
+    if (userInput !== null) { // 用户没点「取消」
       if (userInput !== '') {
-        let newTaskItem = new TaskItem({ text: userInput }); // 构造新任务的对象
-        if (reactiveStorage.myStorageCenter.userStatus.currentGroup === virtualGroupName) { // 如果活跃分组是虚拟分组「全部事项」
-          newTaskItem.group = reactiveStorage.myStorageCenter.userData.groupItemData[0].name; // 则新任务对象的分组property变为第一个分组
-        }
-        reactiveStorage.myStorageCenter.addTask(newTaskItem);
-      }
-      document.getElementById('addNewTask').value = '';
-    }
-    if (event.target.id === 'addGroup') {
-      let userInput = prompt('请输入新分组的名称');
-      let flag = true; // 很C语言
-      if (userInput !== null) { // 用户没点「取消」
-        if (userInput !== '') {
-          reactiveStorage.myStorageCenter.userData.groupItemData.forEach(groupItem => {
-            if (groupItem.name === userInput) {
-              flag = false;
-              alert('已有名为' + userInput + '的分组');
-              return // blank return
-            }
-          });
-          if (flag) { // 很C语言
-            reactiveStorage.myStorageCenter.addGroup(new GroupItem({ name: userInput }));
+        reactiveStorage.myStorageCenter.userData.groupItemData.forEach(groupItem => {
+          if (groupItem.name === userInput) {
+            flag = false;
+            alert('已有名为' + userInput + '的分组');
+            return // blank return
           }
-        }
-        else { alert('分组名称不能为空') }
-      }
-    }
-    if (event.target.classList.contains('deleteTask')) {
-      let taskItemNode = event.target.closest('.taskItem');
-      let timestamp = Number(taskItemNode.getAttribute('timestamp'));
-      reactiveStorage.myStorageCenter.deleteTask(timestamp);
-      // reactiveStorage.myStorageCenter.userStatus.focusingTask = null;
-    }
-    if (event.target.classList.contains('isDone')) {
-      let taskItemNode = event.target.closest('.taskItem');
-      let timestamp = Number(taskItemNode.getAttribute('timestamp'));
-      let taskItem = reactiveStorage.myStorageCenter.findTaskItemObject(timestamp);
-      taskItem.isDone ? taskItem.isDone = false : taskItem.isDone = true;
-    }
-    if (event.target.classList.contains('groupName')) {
-      reactiveStorage.myStorageCenter.userStatus.currentGroup = event.target.textContent;
-      // reactiveStorage.myStorageCenter.userStatus.focusingTask = null;
-      if (window.matchMedia('(orientation: portrait)')) {
-        document.querySelectorAll('[isSwitchingGroupsInPortrait="true"]').forEach(e => { e.setAttribute('isSwitchingGroupsInPortrait', 'false') })
-      }
-    }
-    if (event.target.id === 'export') {
-      prompt('', JSON.stringify(reactiveStorage.myStorageCenter.userData));
-    }
-    if (event.target.id === 'import') {
-      if (confirm('确定导入数据？警告：这会覆盖当前已有的数据。')) {
-        try {
-          let imported = JSON.parse(prompt());
-          if (imported !== null) { // 用户没点「取消」
-            reactiveStorage.myStorageCenter = new StorageCenter({ userData: imported });
-            reactiveStorage.myStorageCenter.userStatus.currentGroup = imported.groupItemData[0].name;
-          }
-        }
-        catch (e) {
-          alert('输入格式不正确，请检查确认后重试');
+        });
+        if (flag) { // 很C语言
+          reactiveStorage.myStorageCenter.addGroup(new GroupItem({ name: userInput }));
         }
       }
+      else { alert('分组名称不能为空') }
     }
-    if (event.target.closest('.taskItem') === null && document.querySelector('.taskItem[isFocusing="true"]')) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
-      // reactiveStorage.myStorageCenter.userStatus.focusingTask = null;
-      document.querySelector('.taskItem[isFocusing="true"]').setAttribute('isFocusing', '');
+  }
+  if (event.target.classList.contains('deleteTask')) {
+    let taskItemNode = event.target.closest('.taskItem');
+    let timestamp = Number(taskItemNode.getAttribute('timestamp'));
+    reactiveStorage.myStorageCenter.deleteTask(timestamp);
+    // reactiveStorage.myStorageCenter.userStatus.focusingTask = null;
+  }
+  if (event.target.classList.contains('isDone')) {
+    let taskItemNode = event.target.closest('.taskItem');
+    let timestamp = Number(taskItemNode.getAttribute('timestamp'));
+    let taskItem = reactiveStorage.myStorageCenter.findTaskItemObject(timestamp);
+    taskItem.isDone ? taskItem.isDone = false : taskItem.isDone = true;
+  }
+  if (event.target.classList.contains('groupName')) {
+    reactiveStorage.myStorageCenter.userStatus.currentGroup = event.target.textContent;
+    // reactiveStorage.myStorageCenter.userStatus.focusingTask = null;
+    if (window.matchMedia('(orientation: portrait)')) {
+      document.querySelectorAll('[isSwitchingGroupsInPortrait="true"]').forEach(e => { e.setAttribute('isSwitchingGroupsInPortrait', 'false') })
     }
-    if (event.target.classList.contains('setDeadline')) {
-      let taskItemNode = event.target.closest('.taskItem');
-      let timestamp = Number(taskItemNode.getAttribute('timestamp'));
-      let taskItem = reactiveStorage.myStorageCenter.findTaskItemObject(timestamp);
-      taskItem.deadline === null ? taskItem.deadline = '' : taskItem.deadline = null;
+  }
+  if (event.target.id === 'export') {
+    prompt('', JSON.stringify(reactiveStorage.myStorageCenter.userData));
+  }
+  if (event.target.id === 'import') {
+    if (confirm('确定导入数据？警告：这会覆盖当前已有的数据。')) {
+      try {
+        let imported = JSON.parse(prompt());
+        if (imported !== null) { // 用户没点「取消」
+          reactiveStorage.myStorageCenter = new StorageCenter({ userData: imported });
+          reactiveStorage.myStorageCenter.userStatus.currentGroup = imported.groupItemData[0].name;
+        }
+      }
+      catch (e) {
+        alert('输入格式不正确，请检查确认后重试');
+      }
     }
-  })
-function cb (){console.log('nested emits.')}
+  }
+  if (event.target.closest('.taskItem') === null && document.querySelector('.taskItem[isFocusing="true"]')) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
+    // reactiveStorage.myStorageCenter.userStatus.focusingTask = null;
+    document.querySelector('.taskItem[isFocusing="true"]').setAttribute('isFocusing', '');
+  }
+  if (event.target.classList.contains('setDeadline')) {
+    let taskItemNode = event.target.closest('.taskItem');
+    let timestamp = Number(taskItemNode.getAttribute('timestamp'));
+    let taskItem = reactiveStorage.myStorageCenter.findTaskItemObject(timestamp);
+    taskItem.deadline === null ? taskItem.deadline = '' : taskItem.deadline = null;
+  }
+})
 </script>
 
 <template>
@@ -303,10 +331,12 @@ function cb (){console.log('nested emits.')}
       <div>{{ reactiveStorage.myStorageCenter.userStatus.currentGroup }}</div>
       <!--当前分组的标题-->
     </div>
-    <TaskContainer v-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === '全部事项'"
-      :currentList="reactiveStorage.myStorageCenter.userData.taskItemData" @response="cb"/>
-    <TaskContainer v-else-if="true"
-      :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter((e) => e.group === reactiveStorage.myStorageCenter.userStatus.currentGroup)" />
+    <div id="container">
+      <TaskContainer v-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === '全部事项'"
+        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData" />
+      <TaskContainer v-else-if="true"
+        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter((e) => e.group === reactiveStorage.myStorageCenter.userStatus.currentGroup)" />
+    </div>
     <div :id="`underContainer`">
       <!-- 紧贴在所有事项的底部，末尾总是有的输入框 -->
       <input :type="`text`" :class="`taskBox-inputTag`" :id="`addNewTask`">

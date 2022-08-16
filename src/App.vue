@@ -18,7 +18,7 @@ function StorageCenter(obj) {
   this.userStatus = {
     currentGroup: GroupName_defaultGroup,
     isSwitchingGroupsInPortrait: false,
-    // StyleSheetIndex: getStylesheetIndex() //用于[timestamp="createdAt"]
+    StyleSheetIndex: getStylesheetIndex() //用于[timestamp="createdAt"]
   };
   Object.keys(obj).map(p => this[p] = obj[p]);
 }
@@ -115,9 +115,9 @@ document.body.addEventListener('click', function (event) {
       reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait = false;
     }
   }
-  // if (event.target.closest('.taskItem') === null) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
-  //   document.styleSheets[reactiveStorage.myStorageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="null"] > .taskOptions`;
-  // }
+  if (event.target.closest('.taskItem') === null) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
+    document.styleSheets[reactiveStorage.myStorageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="null"] > .taskOptions`;
+  }
 })
 function clickAddGroup() {
   let userInput = prompt('请输入新分组的名称');
@@ -149,7 +149,8 @@ function clickAddTask() {
 }
 function getStylesheetIndex() {
   for (let i = 0; i < 30; i++) {
-    if (document.styleSheets[i].cssRules[0] && document.styleSheets[i].cssRules[0].selectorText === '[timestamp="null"] > .taskOptions')
+    console.log('i: ',i)
+    if (document.styleSheets[i] && document.styleSheets[i].cssRules[0] && document.styleSheets[i].cssRules[0].selectorText === '[timestamp="null"] > .taskOptions')
       return i;
   }
 }

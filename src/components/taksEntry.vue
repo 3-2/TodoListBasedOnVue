@@ -1,18 +1,18 @@
 <script setup>
-import {ref} from  'vue'
-const setDeadlineElement = ref();
+import { ref } from 'vue'
+const setDeadlineElement = ref()
 props.taskItem.isSetting = false
 const props = defineProps({
     taskItem: Object,
     storageCenter: Object
 })
 function deadlineInput(event) {
-    console.log('Date is: ',event.target.value);
+    console.log('Date is: ', event.target.value);
     props.taskItem.deadline = new Date(event.target.value + ':00.000Z').getTime(); // 转换为Unix时间戳放入存储中心，使用 UTC+0 时间
 }
-function taskContentFocus() {
-    setDeadlineElement.value.value=new Date().toISOString().slice(0, 16)
-    // document.styleSheets[props.storageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="${props.taskItem.createdAt}"] > .taskOptions`;
+function taskContentFocus(event) {
+    document.styleSheets[props.storageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="${props.taskItem.createdAt}"] > .taskOptions`;
+    // setDeadlineElement.value.value = new Date().toISOString().slice(0, 16)
 }
 function taskContentBlur(event) {
     if (event.target.value == "") {

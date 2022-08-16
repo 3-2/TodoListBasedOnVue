@@ -1,3 +1,36 @@
+/* 该样式保持在第一位 */
+[timestamp="null"]>.taskOptions {
+    display: block;
+}
+
+/*Element Plus, 下拉菜单*/
+.example-showcase .el-dropdown-link {
+    cursor: pointer;
+    color: var(--el-color-primary);
+    display: flex;
+    align-items: center;
+}
+
+.blankBelowGroupList {
+    flex: 1
+}
+
+#addTask {
+    height: 100%
+}
+
+#sidebar>div:nth-child(1), #currentGorupName {
+    font-size: 2rem;
+}
+
+#sidebar, #right {
+    font-size: 1.5rem;
+}
+
+.taskDetails, .taskOptions {
+    font-size: 1rem;
+}
+
 #completed .taskContent {
     color: grey
 }
@@ -9,6 +42,10 @@
 .taskBox-inputTag {
     flex: 1
 }
+
+/* .taskTrailing{
+    flex-shrink: 2;
+} */
 
 .taskBox {
     display: flex
@@ -30,9 +67,14 @@ body {
 }
 
 #sidebar {
+    display: flex;
+    flex-direction: column;
     flex: 1;
-    border-right: 1px solid;
+    border-right: 1px solid grey;
     position: relative;
+    /* 给中间的分割线的两边留出空白 */
+    padding-right: 1rem;
+    margin-right: 1rem
 }
 
 #right {
@@ -56,8 +98,16 @@ body {
 
     #sidebar[isSwitchingGroupsInPortrait='true'] {
         position: absolute;
-        display: block;
-        z-index: 1
+        display: flex;
+        z-index: 1;
+
+        padding-right: 0;
+        /* margin-right: 0; */
+        /* 为了修正偏移 */
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        border-right: 0px;
     }
 
     .groupOptions {
@@ -67,6 +117,11 @@ body {
 }
 
 @media (orientation: landscape) {
+    #sidebar {
+        /* display: flex; */
+        flex-direction: column;
+    }
+
     #expandGroups {
         /* visibility: hidden; */
         display: none;
@@ -87,10 +142,10 @@ body {
     position: relative;
 }
 
-#generalOptions {
+#dropDown_systemTool {
     display: flex;
-    position: absolute;
-    bottom: 0;
+    /* position: absolute;
+    bottom: 0; */
     inline-size: 100%;
 }
 
@@ -119,14 +174,10 @@ body {
     display: none;
 }
 
-.taskItem[isFocusing="true"] .taskOptions {
-    display: block;
-}
-
-.taskMain {
+/* .taskMain {
     border: 2px solid blue;
     margin-top: 1em;
-}
+} */
 
 .taskContent {
     border: none;

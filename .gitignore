@@ -1,6 +1,5 @@
 node_modules
 *.txt
 public
-dist
 .vscode
 .DS_Store

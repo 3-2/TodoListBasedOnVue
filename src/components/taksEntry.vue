@@ -12,7 +12,7 @@ function deadlineInput(event) {
 }
 function taskContentFocus() {
     setDeadlineElement.value.value=new Date().toISOString().slice(0, 16)
-    document.styleSheets[props.storageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="${props.taskItem.createdAt}"] > .taskOptions`;
+    // document.styleSheets[props.storageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="${props.taskItem.createdAt}"] > .taskOptions`;
 }
 function taskContentBlur(event) {
     if (event.target.value == "") {

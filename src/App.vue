@@ -18,8 +18,6 @@ function StorageCenter(obj) {
   this.userStatus = {
     currentGroup: GroupName_defaultGroup,
     isSwitchingGroupsInPortrait: false,
-    targetStyle: getTargetStyle_PRODUCTION(),
-    // targetStyle: getTargetStyle_DEVELOPMENT()
   };
   Object.keys(obj).map(p => this[p] = obj[p]);
 }
@@ -44,11 +42,12 @@ StorageCenter.prototype.renameGroup = function (oldName, newName) {
 };
 StorageCenter.prototype.isExistedGroupName = function (userInput) { let returnValue = false; reactiveStorage.myStorageCenter.userData.groupItemData.forEach(groupItem => { if (groupItem.name === userInput) returnValue = true; }); return returnValue; }
 function pauseToLocalStorage() {
+  console.log('function pauseToLocalStorage()')
   localStorage.setItem('pausedData', JSON.stringify(reactiveStorage.myStorageCenter));
+  console.log('JSON Stringfied.')
 }
 function resumeFromLocalStorage() {
   reactiveStorage.myStorageCenter = new StorageCenter(JSON.parse(localStorage.getItem('pausedData')));
-  reactiveStorage.myStorageCenter.userStatus.targetStyle = getTargetStyle_DEVELOPMENT(); // 每次刷新后都会失去引用，所以要重新获取对该style的引用
 }
 function TaskItem(data) {
   // 事项对象的默认 property
@@ -118,7 +117,8 @@ document.body.addEventListener('click', function (event) {
     }
   }
   if (event.target.closest('.taskItem') === null) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
-    reactiveStorage.myStorageCenter.userStatus.targetStyle.selectorText = `[timestamp="null"] > .taskOptions`;
+    let isExsistedFocusingTask = document.querySelector('[displayTaskOptions]');
+    if(isExsistedFocusingTask){isExsistedFocusingTask.removeAttribute('displayTaskOptions');}
   }
 })
 function clickAddGroup() {
@@ -148,22 +148,6 @@ function clickAddTask() {
     reactiveStorage.myStorageCenter.addTask(newTaskItem);
   }
   TextBoxToAddNewTask.value.value = '';
-}
-function getTargetStyle_DEVELOPMENT() {
-  for (let i = 0; i < 30; i++) {
-    if (document.styleSheets[i] && document.styleSheets[i].cssRules[0] && document.styleSheets[i].cssRules[0].selectorText === '[timestamp="null"] > .taskOptions')
-      {console.log('Style [timestamp="null"] > .taskOptions ranks at', i);
-      return document.styleSheets[i].cssRules[0];}
-  }
-}
-function getTargetStyle_PRODUCTION() {
-  let i = 0;
-  while (i < 10000) {
-    if (document.styleSheets[0].cssRules[i++].selectorText === '[timestamp="null"] > .taskOptions') {
-      console.log('Style [timestamp="null"] > .taskOptions ranks at', i);
-      return document.styleSheets[0].cssRules[i--];
-    }
-  }
 }
 const dropdown1 = ref()
 function showClick() {

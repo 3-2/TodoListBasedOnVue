@@ -1,11 +1,16 @@
-/* 该样式保持在第一位（仅用于开发模式） */
-[timestamp="null"]>.taskOptions {
-    display: block;
+[displayTaskOptions] {
+    display: block !important;
 }
 
-input {
+input[type="checkbox"] {
+    inline-size: 1rem;
+    block-size: 1rem;
+}
+
+.taskBox-inputTag {
     outline-color: #79bbff
 }
+
 /*Element Plus, 下拉菜单*/
 .example-showcase .el-dropdown-link {
     cursor: pointer;
@@ -47,7 +52,8 @@ input {
 }
 
 .taskBox {
-    display: flex
+    display: flex;
+    align-items: center
 }
 
 #container, #sidebar {

@@ -10,8 +10,11 @@ function deadlineInput(event) {
     console.log('Date is: ', event.target.value);
     props.taskItem.deadline = new Date(event.target.value + ':00.000Z').getTime(); // 转换为Unix时间戳放入存储中心，使用 UTC+0 时间
 }
-function taskContentFocus() {
-    props.storageCenter.userStatus.targetStyle.selectorText = `[timestamp="${props.taskItem.createdAt}"] > .taskOptions`;
+function taskContentFocus(event) {
+    if (!event.target.parentElement.parentElement.nextElementSibling.hasAttribute('displayTaskOptions')) {
+        if (document.querySelector('[displayTaskOptions]')) { document.querySelector('[displayTaskOptions]').removeAttribute('displayTaskOptions') }
+        event.target.parentElement.parentElement.nextElementSibling.setAttribute('displayTaskOptions', '');
+    }
     // setDeadlineElement.value.value = new Date().toISOString().slice(0, 16)
 }
 function taskContentBlur(event) {
@@ -29,6 +32,9 @@ function setDeadline() {
         props.taskItem.deadline = null;
         props.taskItem.isSetting = false;
     }
+}
+function clickDeleteTask() {
+    { props.storageCenter.userData.taskItemData.splice(props.storageCenter.userData.taskItemData.indexOf(props.taskItem), 1); document.querySelector('[displayTaskOptions]').removeAttribute('displayTaskOptions') }
 }
 </script>
 <template>
@@ -50,7 +56,7 @@ function setDeadline() {
             <input :type="`checkbox`" :class="`setDeadline`" @click="setDeadline"
                 :checked="taskItem.isSetting || Boolean(taskItem.deadline)" ref="setDeadlineElement">截止时间
             <button :class="`deleteTask`"
-                @click="() => { props.storageCenter.userData.taskItemData.splice(props.storageCenter.userData.taskItemData.indexOf(props.taskItem), 1) }">删除</button>
+                @click="clickDeleteTask">删除</button>
         </div>
     </div>
 </template>

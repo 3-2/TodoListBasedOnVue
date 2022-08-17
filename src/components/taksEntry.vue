@@ -10,8 +10,8 @@ function deadlineInput(event) {
     console.log('Date is: ', event.target.value);
     props.taskItem.deadline = new Date(event.target.value + ':00.000Z').getTime(); // 转换为Unix时间戳放入存储中心，使用 UTC+0 时间
 }
-function taskContentFocus(event) {
-    document.styleSheets[props.storageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="${props.taskItem.createdAt}"] > .taskOptions`;
+function taskContentFocus() {
+    props.storageCenter.userStatus.targetStyle.selectorText = `[timestamp="${props.taskItem.createdAt}"] > .taskOptions`;
     // setDeadlineElement.value.value = new Date().toISOString().slice(0, 16)
 }
 function taskContentBlur(event) {

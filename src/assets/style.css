@@ -1,8 +1,11 @@
-/* 该样式保持在第一位 */
+/* 该样式保持在第一位（仅用于开发模式） */
 [timestamp="null"]>.taskOptions {
     display: block;
 }
 
+input {
+    outline-color: #79bbff
+}
 /*Element Plus, 下拉菜单*/
 .example-showcase .el-dropdown-link {
     cursor: pointer;
@@ -43,10 +46,6 @@
     flex: 1
 }
 
-/* .taskTrailing{
-    flex-shrink: 2;
-} */
-
 .taskBox {
     display: flex
 }
@@ -70,7 +69,7 @@ body {
     display: flex;
     flex-direction: column;
     flex: 1;
-    border-right: 1px solid grey;
+    border-right: 1px solid #79bbff;
     position: relative;
     /* 给中间的分割线的两边留出空白 */
     padding-right: 1rem;
@@ -118,22 +117,12 @@ body {
 
 @media (orientation: landscape) {
     #sidebar {
-        /* display: flex; */
         flex-direction: column;
     }
 
     #expandGroups {
-        /* visibility: hidden; */
         display: none;
     }
-
-    /* .groupOptions {
-        visibility: hidden;
-    }
-
-    .groupItem:hover .groupOptions {
-        display: inline;
-    } */
 }
 
 
@@ -144,8 +133,6 @@ body {
 
 #dropDown_systemTool {
     display: flex;
-    /* position: absolute;
-    bottom: 0; */
     inline-size: 100%;
 }
 
@@ -173,11 +160,6 @@ body {
 .taskOptions {
     display: none;
 }
-
-/* .taskMain {
-    border: 2px solid blue;
-    margin-top: 1em;
-} */
 
 .taskContent {
     border: none;

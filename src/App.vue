@@ -18,7 +18,8 @@ function StorageCenter(obj) {
   this.userStatus = {
     currentGroup: GroupName_defaultGroup,
     isSwitchingGroupsInPortrait: false,
-    StyleSheetIndex: getStylesheetIndex() //用于[timestamp="createdAt"]
+    targetStyle: getTargetStyle_PRODUCTION(),
+    // targetStyle: getTargetStyle_DEVELOPMENT()
   };
   Object.keys(obj).map(p => this[p] = obj[p]);
 }
@@ -47,6 +48,7 @@ function pauseToLocalStorage() {
 }
 function resumeFromLocalStorage() {
   reactiveStorage.myStorageCenter = new StorageCenter(JSON.parse(localStorage.getItem('pausedData')));
+  reactiveStorage.myStorageCenter.userStatus.targetStyle = getTargetStyle_DEVELOPMENT(); // 每次刷新后都会失去引用，所以要重新获取对该style的引用
 }
 function TaskItem(data) {
   // 事项对象的默认 property
@@ -116,7 +118,7 @@ document.body.addEventListener('click', function (event) {
     }
   }
   if (event.target.closest('.taskItem') === null) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
-    document.styleSheets[reactiveStorage.myStorageCenter.userStatus.StyleSheetIndex].cssRules[0].selectorText = `[timestamp="null"] > .taskOptions`;
+    reactiveStorage.myStorageCenter.userStatus.targetStyle.selectorText = `[timestamp="null"] > .taskOptions`;
   }
 })
 function clickAddGroup() {
@@ -147,11 +149,20 @@ function clickAddTask() {
   }
   TextBoxToAddNewTask.value.value = '';
 }
-function getStylesheetIndex() {
+function getTargetStyle_DEVELOPMENT() {
   for (let i = 0; i < 30; i++) {
-    console.log('i: ',i)
     if (document.styleSheets[i] && document.styleSheets[i].cssRules[0] && document.styleSheets[i].cssRules[0].selectorText === '[timestamp="null"] > .taskOptions')
-      return i;
+      {console.log('Style [timestamp="null"] > .taskOptions ranks at', i);
+      return document.styleSheets[i].cssRules[0];}
+  }
+}
+function getTargetStyle_PRODUCTION() {
+  let i = 0;
+  while (i < 10000) {
+    if (document.styleSheets[0].cssRules[i++].selectorText === '[timestamp="null"] > .taskOptions') {
+      console.log('Style [timestamp="null"] > .taskOptions ranks at', i);
+      return document.styleSheets[0].cssRules[i--];
+    }
   }
 }
 const dropdown1 = ref()

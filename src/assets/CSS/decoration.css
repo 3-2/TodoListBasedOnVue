@@ -1,0 +1,127 @@
+#sidebar {
+    padding: 1rem;
+    /* 解决iOS Safari超出边缘 */
+    box-sizing: border-box;
+}
+
+@media (orientation: landscape) {
+    #sidebar {
+        background-color: #dddddd;
+    }
+
+    .groupItem {
+        border-radius: var(--el-border-radius-base);
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .groupItem[activeGroup="true"] {
+        background-color: #d2d2d2;
+    }
+
+    .groupName {
+        font-size: 1rem;
+    }
+
+}
+
+@media (orientation: portrait) {
+    .groupName {
+        border-bottom: 1px solid black;
+        padding: 0.5rem;
+        font-size: 1.5rem;
+    }
+}
+
+
+#right {
+    background-color: #6b7fc7;
+
+    padding: 1rem;
+    /* 解决iOS Safari超出边缘 */
+    box-sizing: border-box;
+}
+
+#currentGorupName {
+    font-size: 2rem;
+}
+
+
+.taskNumber, .groupName {
+    margin: auto;
+}
+
+#addNewTask {
+    background-color: #5768a9;
+    color: white;
+    margin-right: 1rem;
+}
+
+#underContainer:first-child {
+    margin-left: 1rem;
+}
+
+.taskBox-inputTag {
+    border-radius: var(--el-border-radius-base);
+    padding-left: 0.5rem;
+    border: none;
+    outline: none;
+}
+
+#underGroupList {
+    /* padding: 1rem; */
+    padding-bottom: 0;
+    box-sizing: border-box;
+}
+
+
+#currentGorupName {
+    margin-bottom: 1rem;
+}
+
+/* 分组的分隔线 */
+div.groupItem:nth-child(2) {
+    margin-bottom: 0.5rem;
+}
+
+/* div.groupItem:nth-child(4) {
+    margin-top: 0.5rem;
+} */
+
+.taskItem {
+    margin-bottom: 0.5rem;
+}
+
+#completed .taskContent {
+    color: grey;
+    background-color: #edf5fe
+}
+
+.groupName {
+    margin-left: 0.5rem;
+}
+
+/* .taskContent {
+    font-size: 1.5rem;
+} */
+
+.isDone {
+    width: 2rem;
+    height: 2rem;
+}
+
+.taskDetails {
+    margin-top: -0.6rem;
+}
+
+.taskOptions {
+    margin-top: -0.6rem;
+}
+
+#groupContainer {
+    margin-top: 0.5rem;
+}
+
+#groupContainer, #container{
+    overflow: scroll;
+}

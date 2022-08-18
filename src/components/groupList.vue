@@ -7,27 +7,12 @@ const props = defineProps({
 
 </script>
 <template>
-    <div>
-        <div :class="`groupItem`" :id="`allTasks`">
-            <div :class="`groupName`">全部事项</div>
-            <div :class="`groupTrailing`">
-                <div :class="`taskNumber`">{{ storageCenter.userData.taskItemData.filter(e =>
-                        !e.isDone).length
-                }}</div>
-            </div>
-        </div>
-        <div :class="`groupItem`" :id="`toDeadline`">
-            <div :class="`groupName`">将要截止</div>
-            <div :class="`groupTrailing`">
-                <div :class="`taskNumber`">{{ storageCenter.userData.taskItemData.filter(e =>
-                        e.deadline
-                        &&
-                        !e.isDone).length
-                }}</div>
-            </div>
-        </div>
+    <GroupEntry :groupItem="{ name: '全部事项' }" :storageCenter="storageCenter" />
+    <GroupEntry :groupItem="{ name: '将要截止' }" :storageCenter="storageCenter" />
+    <div style="border-bottom: 2px solid #c2c2c2"></div>
+    <div :id="`groupContainer`">
+        <template v-for="groupItem in groupItemArray">
+            <GroupEntry :groupItem="groupItem" :storageCenter="storageCenter" />
+        </template>
     </div>
-    <template v-for="groupItem in groupItemArray">
-        <GroupEntry :groupItem="groupItem" :storageCenter="storageCenter" />
-    </template>
 </template>

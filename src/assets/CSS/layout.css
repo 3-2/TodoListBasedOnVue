@@ -1,0 +1,74 @@
+html{
+    block-size: 100%;
+}
+body {
+    display: flex;
+    /* 防止兼容移动端浏览器的UI遮挡边缘 */
+    block-size: 100%;
+    position: fixed;
+    /* position fixed后，body不会占据整个一行 */
+    inline-size: 100%;
+}
+
+#sidebar {
+    flex: 3;
+    /* 为了让blankBelowGroupList撑满 */
+    display: flex;
+    flex-direction: column;
+}
+
+#blankBelowGroupList {
+    flex: 1;
+}
+
+#right {
+    flex: 7;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#underGroupList {
+    /* position: absolute;
+    bottom: 0.5rem; */
+    color: red;
+    inline-size: 100%;
+    /* 让「添加分组」按钮伸长 */
+    display: flex;
+}
+
+#addGroup {
+    flex: 1;
+}
+
+#blankBelowTaskList {
+    flex: 1
+}
+
+#underContainer {
+    display: flex;
+}
+
+.taskBox-inputTag {
+    flex: 1
+}
+
+#topBar {
+    display: flex;
+}
+
+#currentGorupName {
+    flex: 1;
+}
+
+.taskBox {
+    display: flex;
+}
+
+.groupItem {
+    display: flex;
+}
+
+.groupName {
+    flex: 1
+}

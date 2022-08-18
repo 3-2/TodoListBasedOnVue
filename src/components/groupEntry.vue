@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { Operation } from '@element-plus/icons-vue'
+import { Operation, Clock } from '@element-plus/icons-vue'
 
 const props = defineProps({
     groupItem: Object,
@@ -36,35 +36,40 @@ function deleteGroup() {
         }
     }
 }
+function clickGroupItem(event) {
+    // event.stopPropagation();
+    props.storageCenter.userStatus.currentGroup = props.groupItem.name;
+    if (window.matchMedia('(orientation: portrait)')) {
+        props.storageCenter.userStatus.isSwitchingGroupsInPortrait = false;
+    }
+}
 const dropdown1 = ref()
-function showClick() {
+function showClick(event) {
+    event.stopPropagation();
     dropdown1.value.handleOpen()
 }
 </script>
 <template>
-    <div :class="`groupItem`" :groupname="groupItem.name">
+    <div :class="`groupItem`" :groupname="groupItem.name" @click="clickGroupItem" :activeGroup="storageCenter.userStatus.currentGroup === groupItem.name">
+        <el-icon v-if="groupItem.name === '将要截止'" style="margin: auto"><Clock /></el-icon>
+        <el-icon v-else-if="groupItem.name === '全部事项'" style="margin: auto"><Memo /></el-icon>
+        <el-button v-else @click="showClick" style="padding:0; border:none;background-color: transparent;color:black" size="large" :icon="Operation">
+        </el-button>
+        <el-dropdown ref="dropdown1" trigger="contextmenu">
+            <span class="el-dropdown-link"></span>
+            <template #dropdown>
+                <el-dropdown-menu>
+                    <el-dropdown-item @click="renameGroup">重命名</el-dropdown-item>
+                    <el-dropdown-item @click="deleteGroup" v-if="storageCenter.userData.groupItemData.length > 1">删除
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </template>
+        </el-dropdown>
         <div :class="`groupName`">{{ groupItem.name }}</div>
-        <div :class="`groupTrailing`">
-            <div>
-                <el-button @click="showClick">
-                    <el-icon>
-                        <Operation />
-                    </el-icon>
-                </el-button>
-            </div>
-            <el-dropdown ref="dropdown1" trigger="contextmenu">
-                <span class="el-dropdown-link"></span>
-                <template #dropdown>
-                    <el-dropdown-menu>
-                        <el-dropdown-item @click="renameGroup">重命名</el-dropdown-item>
-                        <el-dropdown-item @click="deleteGroup" v-if="storageCenter.userData.groupItemData.length > 1">删除
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown>
-            <div :class="`taskNumber`">{{ props.storageCenter.userData.taskItemData.filter(e => e.group ===
-                    groupItem.name && !e.isDone).length
-            }}</div>
-        </div>
+        <el-button style="visibility: hidden" :icon="Operation">
+        </el-button>
+        <div :class="`taskNumber`">{{ props.storageCenter.userData.taskItemData.filter(e => e.group ===
+                groupItem.name && !e.isDone).length
+        }}</div>
     </div>
 </template>

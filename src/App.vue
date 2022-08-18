@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, onBeforeMount, ref, computed } from 'vue';
-import { Setting } from '@element-plus/icons-vue'
+import { Setting, Memo, Plus } from '@element-plus/icons-vue'
 
 import TaskContainer from './components/TaskContainer.vue';
 import GroupList from './components/groupList.vue'
@@ -42,9 +42,7 @@ StorageCenter.prototype.renameGroup = function (oldName, newName) {
 };
 StorageCenter.prototype.isExistedGroupName = function (userInput) { let returnValue = false; reactiveStorage.myStorageCenter.userData.groupItemData.forEach(groupItem => { if (groupItem.name === userInput) returnValue = true; }); return returnValue; }
 function pauseToLocalStorage() {
-  console.log('function pauseToLocalStorage()')
   localStorage.setItem('pausedData', JSON.stringify(reactiveStorage.myStorageCenter));
-  console.log('JSON Stringfied.')
 }
 function resumeFromLocalStorage() {
   reactiveStorage.myStorageCenter = new StorageCenter(JSON.parse(localStorage.getItem('pausedData')));
@@ -82,6 +80,7 @@ onBeforeMount(() => {
 })
 // 业务：关闭网页
 window.addEventListener('pagehide', function () { // 仅在关闭网页时备份
+  reactiveStorage.myStorageCenter.userData.taskItemData.forEach(taskItem => { if (taskItem.deadline==='') taskItem.deadline = null })
   pauseToLocalStorage();
 });
 window.addEventListener('orientationchange', function () {
@@ -108,17 +107,19 @@ function importData() {
   }
 }
 
-// 听说这是公交车？
 document.body.addEventListener('click', function (event) {
-  if (event.target.classList.contains('groupName')) {
-    reactiveStorage.myStorageCenter.userStatus.currentGroup = event.target.textContent;
-    if (window.matchMedia('(orientation: portrait)')) {
-      reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait = false;
-    }
-  }
+  // if (event.target.classList.contains('groupName')) {
+  //   reactiveStorage.myStorageCenter.userStatus.currentGroup = event.target.textContent;
+  //   if (window.matchMedia('(orientation: portrait)')) {
+  //     reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait = false;
+  //   }
+  // }
   if (event.target.closest('.taskItem') === null) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
     let isExsistedFocusingTask = document.querySelector('[displayTaskOptions]');
-    if(isExsistedFocusingTask){isExsistedFocusingTask.removeAttribute('displayTaskOptions');}
+    if (isExsistedFocusingTask) {
+      isExsistedFocusingTask.removeAttribute('displayTaskOptions');
+      reactiveStorage.myStorageCenter.userData.taskItemData.forEach(taskItem => { if (taskItem.isSetting) taskItem.isSetting = false })
+    }
   }
 })
 function clickAddGroup() {
@@ -158,62 +159,59 @@ function showClick() {
 
 <template>
   <div :id="`sidebar`" :isSwitchingGroupsInPortrait="isSwitchingGroupsInPortrait" @click="clickSidebar">
-    <div>分组</div>
+    <!-- <div>分组</div> -->
     <GroupList :groupItemArray="reactiveStorage.myStorageCenter.userData.groupItemData"
       :storageCenter="reactiveStorage.myStorageCenter" />
-    <el-button :id="`addGroup`" type="primary" plain @click="clickAddGroup">
-      <el-icon>
-        <Plus />
-      </el-icon>
-    </el-button>
-
-    <div :class="`blankBelowGroupList`" @click="clickBlankBelowSidebar"></div>
-    <div style="margin: 15px">
-      <el-button @click="showClick">
-        <el-icon>
-          <Setting />
-        </el-icon>
+    <div :id="`blankBelowGroupList`" @click="clickBlankBelowSidebar"></div>
+    <div :id="`underGroupList`">
+      <el-button :id="`addGroup`" type="primary" plain @click="clickAddGroup" :icon="Plus">
+        添加分组
       </el-button>
+      <el-button type="primary" plain @click="showClick" :icon="Setting">
+      </el-button>
+      <el-dropdown ref="dropdown1" trigger="contextmenu">
+        <span class="el-dropdown-link"></span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="format">抹掉数据</el-dropdown-item>
+            <el-dropdown-item @click="exportData">导出数据</el-dropdown-item>
+            <el-dropdown-item @click="importData">导入数据</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
     </div>
-    <el-dropdown ref="dropdown1" trigger="contextmenu" style="margin-right: 30px">
-      <span class="el-dropdown-link"></span>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item @click="format">抹掉数据</el-dropdown-item>
-          <el-dropdown-item @click="exportData">导出数据</el-dropdown-item>
-          <el-dropdown-item @click="importData">导入数据</el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
+
   </div>
   <div :id="`right`" :isSwitchingGroupsInPortrait="isSwitchingGroupsInPortrait">
-    <div :id="`topBar`">
-      <div :id="`currentGorupName`">{{ reactiveStorage.myStorageCenter.userStatus.currentGroup }}</div>
-      <div :class="`blankBelowGroupList`"></div>
-      <button :id="`expandGroups`" @click="expandGroups">展开分组</button>
-      <!--当前分组的标题-->
-    </div>
-    <div :id="`container`">
-      <TaskContainer v-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_allTasks"
-        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData"
-        :storageCenter="reactiveStorage.myStorageCenter" />
-      <TaskContainer v-else-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_TasksWithDeadline"
-        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.deadline)"
-        :storageCenter="reactiveStorage.myStorageCenter" />
-      <TaskContainer v-else-if="true"
-        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.group === reactiveStorage.myStorageCenter.userStatus.currentGroup)"
-        :storageCenter="reactiveStorage.myStorageCenter" />
-    </div>
+    <!-- <div> -->
+      <div :id="`topBar`">
+        <div :id="`currentGorupName`">{{ reactiveStorage.myStorageCenter.userStatus.currentGroup }}</div>
+        <!-- <button :id="`expandGroups`" @click="expandGroups">展开分组</button> -->
+        <el-button :id="`expandGroups`" ref="addTaskButton" plain @click="expandGroups" icon="Memo">
+        </el-button>
+        <!--当前分组的标题-->
+      </div>
+      <div :id="`container`">
+        <TaskContainer v-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_allTasks"
+          :currentList="reactiveStorage.myStorageCenter.userData.taskItemData"
+          :storageCenter="reactiveStorage.myStorageCenter" />
+        <TaskContainer
+          v-else-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_TasksWithDeadline"
+          :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.deadline)"
+          :storageCenter="reactiveStorage.myStorageCenter" />
+        <TaskContainer v-else-if="true"
+          :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.group === reactiveStorage.myStorageCenter.userStatus.currentGroup)"
+          :storageCenter="reactiveStorage.myStorageCenter" />
+      </div>
+    <!-- </div> -->
+    <div :id="`blankBelowTaskList`"></div>
     <div :id="`underContainer`">
       <!-- 紧贴在所有事项的底部，末尾总是有的输入框 -->
       <input :type="`text`" :class="`taskBox-inputTag`" :id="`addNewTask`" ref="TextBoxToAddNewTask"
-        @keyup.enter.native="clickAddTask">
+        :placeholder="`添加任务`" @keyup.enter.native="clickAddTask">
       <div :class="`taskTrailing`">
         <!-- <button :id="`addTask`" ref="addTaskButton" @click="clickAddTask">添加</button> -->
-        <el-button :id="`addTask`" ref="addTaskButton" type="primary" plain @click="clickAddTask">
-          <el-icon>
-            <Plus />
-          </el-icon>
+        <el-button :id="`addTask`" ref="addTaskButton" type="primary" plain @click="clickAddTask" :icon="Plus">
         </el-button>
       </div>
     </div>
@@ -221,4 +219,10 @@ function showClick() {
 </template>
 
 <style scoped>
+.example-showcase .el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
+}
 </style>

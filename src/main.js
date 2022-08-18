@@ -5,8 +5,11 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
-import './assets/style.css'
-import './assets/normalize.css'
+import './assets/CSS/normalize.css'
+
+import './assets/CSS/layout.css'
+import './assets/CSS/control.css'
+import './assets/CSS/decoration.css'
 
 const app = createApp(App)
 app.use(ElementPlus)

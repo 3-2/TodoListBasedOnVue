@@ -23,6 +23,10 @@
         font-size: 1rem;
     }
 
+    #messageToHR {
+        display: none;
+    }
+
 }
 
 @media (orientation: portrait) {
@@ -30,6 +34,18 @@
         border-bottom: 1px solid black;
         padding: 0.5rem;
         font-size: 1.5rem;
+    }
+
+    #messageToHR {
+        position: fixed;
+        color: red;
+        bottom: 20vh;
+        /* padding: auto 0; */
+    }
+
+    /* 取消portrait视图下，最后一个内置分组的下边框 */
+    div.groupItem:nth-child(2)>div:nth-child(3) {
+        border: none;
     }
 }
 
@@ -84,10 +100,6 @@ div.groupItem:nth-child(2) {
     margin-bottom: 0.5rem;
 }
 
-/* div.groupItem:nth-child(4) {
-    margin-top: 0.5rem;
-} */
-
 .taskItem {
     margin-bottom: 0.5rem;
 }
@@ -100,10 +112,6 @@ div.groupItem:nth-child(2) {
 .groupName {
     margin-left: 0.5rem;
 }
-
-/* .taskContent {
-    font-size: 1.5rem;
-} */
 
 .isDone {
     width: 2rem;
@@ -122,6 +130,6 @@ div.groupItem:nth-child(2) {
     margin-top: 0.5rem;
 }
 
-#groupContainer, #container{
+#groupContainer, #container {
     overflow: scroll;
 }

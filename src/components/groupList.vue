@@ -15,4 +15,6 @@ const props = defineProps({
             <GroupEntry :groupItem="groupItem" :storageCenter="storageCenter" />
         </template>
     </div>
+    
+    <p :id="`messageToHR`">把手机横过来，landscape 的样式不同哟~</p>
 </template>

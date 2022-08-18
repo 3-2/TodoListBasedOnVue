@@ -1,10 +1,11 @@
 [displayTaskOptions] {
     display: block !important;
 }
+
 .taskOptions {
     display: none;
 }
-/* 移动端 */
+
 @media (orientation: portrait) {
     #sidebar, #right {
         inline-size: 100%;
@@ -24,8 +25,6 @@
         display: flex;
         z-index: 1;
 
-        /* padding: 0; */
-        /* margin-right: 0; */
         /* 为了修正偏移 */
         right: 0px;
         bottom: 0px;

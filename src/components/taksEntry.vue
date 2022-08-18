@@ -1,5 +1,5 @@
 <script setup>
-import { ref,computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 // const setDeadlineElement = ref()
 props.taskItem.isSetting = false
 const props = defineProps({

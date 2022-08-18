@@ -21,7 +21,6 @@ function renameGroup() {
     }
 }
 function deleteGroup() {
-    console.log(props.groupItem.name)
     let number = props.storageCenter.userData.taskItemData.filter(e => e.group === props.groupItem.name).length;
     if (confirm(number ? "确认删除" + props.groupItem.name + "分组？这将会删除该分组中共计" + number + "个事项。" : '确认删除分组' + props.groupItem.name + '？（该分组中无任务）')) {
         let index = props.storageCenter.userData.groupItemData.indexOf(props.groupItem);
@@ -36,7 +35,7 @@ function deleteGroup() {
         }
     }
 }
-function clickGroupItem(event) {
+function clickGroupItem() {
     // event.stopPropagation();
     props.storageCenter.userStatus.currentGroup = props.groupItem.name;
     if (window.matchMedia('(orientation: portrait)')) {

@@ -61,11 +61,6 @@ function GroupItem(data) {
   this.name = '未命名分组';
   Object.keys(data).map(p => this[p] = data[p]);
 }
-// function UserStatus(obj) {
-//   // 用户状态对象的默认 property
-//   this.currentGroup = null;
-//   Object.keys(obj).map(p => this[p] = obj[p]);
-// }
 const addTaskButton = ref();
 const TextBoxToAddNewTask = ref()
 
@@ -80,7 +75,7 @@ onBeforeMount(() => {
 })
 // 业务：关闭网页
 window.addEventListener('pagehide', function () { // 仅在关闭网页时备份
-  reactiveStorage.myStorageCenter.userData.taskItemData.forEach(taskItem => { if (taskItem.deadline==='') taskItem.deadline = null })
+  reactiveStorage.myStorageCenter.userData.taskItemData.forEach(taskItem => { if (taskItem.deadline === '') taskItem.deadline = null })
   pauseToLocalStorage();
 });
 window.addEventListener('orientationchange', function () {
@@ -108,12 +103,6 @@ function importData() {
 }
 
 document.body.addEventListener('click', function (event) {
-  // if (event.target.classList.contains('groupName')) {
-  //   reactiveStorage.myStorageCenter.userStatus.currentGroup = event.target.textContent;
-  //   if (window.matchMedia('(orientation: portrait)')) {
-  //     reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait = false;
-  //   }
-  // }
   if (event.target.closest('.taskItem') === null) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
     let isExsistedFocusingTask = document.querySelector('[displayTaskOptions]');
     if (isExsistedFocusingTask) {
@@ -183,34 +172,29 @@ function showClick() {
 
   </div>
   <div :id="`right`" :isSwitchingGroupsInPortrait="isSwitchingGroupsInPortrait">
-    <!-- <div> -->
-      <div :id="`topBar`">
-        <div :id="`currentGorupName`">{{ reactiveStorage.myStorageCenter.userStatus.currentGroup }}</div>
-        <!-- <button :id="`expandGroups`" @click="expandGroups">展开分组</button> -->
-        <el-button :id="`expandGroups`" ref="addTaskButton" plain @click="expandGroups" icon="Memo">
-        </el-button>
-        <!--当前分组的标题-->
-      </div>
-      <div :id="`container`">
-        <TaskContainer v-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_allTasks"
-          :currentList="reactiveStorage.myStorageCenter.userData.taskItemData"
-          :storageCenter="reactiveStorage.myStorageCenter" />
-        <TaskContainer
-          v-else-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_TasksWithDeadline"
-          :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.deadline)"
-          :storageCenter="reactiveStorage.myStorageCenter" />
-        <TaskContainer v-else-if="true"
-          :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.group === reactiveStorage.myStorageCenter.userStatus.currentGroup)"
-          :storageCenter="reactiveStorage.myStorageCenter" />
-      </div>
-    <!-- </div> -->
+    <div :id="`topBar`">
+      <div :id="`currentGorupName`">{{ reactiveStorage.myStorageCenter.userStatus.currentGroup }}</div>
+      <el-button :id="`expandGroups`" ref="addTaskButton" plain @click="expandGroups" icon="Memo">
+      </el-button>
+      <!--当前分组的标题-->
+    </div>
+    <div :id="`container`">
+      <TaskContainer v-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_allTasks"
+        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData"
+        :storageCenter="reactiveStorage.myStorageCenter" />
+      <TaskContainer v-else-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_TasksWithDeadline"
+        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.deadline)"
+        :storageCenter="reactiveStorage.myStorageCenter" />
+      <TaskContainer v-else-if="true"
+        :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.group === reactiveStorage.myStorageCenter.userStatus.currentGroup)"
+        :storageCenter="reactiveStorage.myStorageCenter" />
+    </div>
     <div :id="`blankBelowTaskList`"></div>
     <div :id="`underContainer`">
       <!-- 紧贴在所有事项的底部，末尾总是有的输入框 -->
       <input :type="`text`" :class="`taskBox-inputTag`" :id="`addNewTask`" ref="TextBoxToAddNewTask"
         :placeholder="`添加任务`" @keyup.enter.native="clickAddTask">
       <div :class="`taskTrailing`">
-        <!-- <button :id="`addTask`" ref="addTaskButton" @click="clickAddTask">添加</button> -->
         <el-button :id="`addTask`" ref="addTaskButton" type="primary" plain @click="clickAddTask" :icon="Plus">
         </el-button>
       </div>

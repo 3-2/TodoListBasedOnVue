@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, onBeforeMount, ref, computed } from 'vue';
-import { Setting, Memo, Plus } from '@element-plus/icons-vue'
+import { Setting, Plus } from '@element-plus/icons-vue'
 
 import TaskContainer from './components/TaskContainer.vue';
 import GroupList from './components/groupList.vue'
@@ -148,7 +148,6 @@ function showClick() {
 
 <template>
   <div :id="`sidebar`" :isSwitchingGroupsInPortrait="isSwitchingGroupsInPortrait" @click="clickSidebar">
-    <!-- <div>分组</div> -->
     <GroupList :groupItemArray="reactiveStorage.myStorageCenter.userData.groupItemData"
       :storageCenter="reactiveStorage.myStorageCenter" />
     <div :id="`blankBelowGroupList`" @click="clickBlankBelowSidebar"></div>

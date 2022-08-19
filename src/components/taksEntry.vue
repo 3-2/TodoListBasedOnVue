@@ -26,7 +26,7 @@ function taskContentBlur(event) {
 function setDeadline() {
     if (props.taskItem.deadline === null) {
         props.taskItem.deadline = ''
-        props.taskItem.deadline =new Date().toISOString().slice(0, 16);
+        props.taskItem.deadline = new Date().toISOString().slice(0, 16);
         props.taskItem.isSetting = true;
     }
     else {
@@ -38,7 +38,7 @@ function clickDeleteTask() {
     { props.storageCenter.userData.taskItemData.splice(props.storageCenter.userData.taskItemData.indexOf(props.taskItem), 1); document.querySelector('[displayTaskOptions]').removeAttribute('displayTaskOptions') }
 }
 let ElSetDeadline = ref(Boolean(props.taskItem.deadline))
-watch(ElSetDeadline,setDeadline)
+watch(ElSetDeadline, setDeadline)
 </script>
 <template>
     <div :class="`taskItem`" :timestamp="taskItem.createdAt">
@@ -49,7 +49,8 @@ watch(ElSetDeadline,setDeadline)
                 <input :class="[`taskBox-inputTag`, `taskContent`]" :type="`text`" :value="taskItem.text"
                     @focus="taskContentFocus" @blur="taskContentBlur">
             </div>
-            <div v-if="taskItem.isSetting && taskItem.deadline === ''|| taskItem.deadline !== null" :class="`taskDetails`">
+            <div v-if="taskItem.isSetting && taskItem.deadline === '' || taskItem.deadline !== null"
+                :class="`taskDetails`">
                 <input :type="`checkbox`" :class="`isDone`" style="visibility: hidden">
 
                 <input v-if="taskItem.deadline || taskItem.isSetting && taskItem.deadline === ''"
@@ -62,8 +63,16 @@ watch(ElSetDeadline,setDeadline)
 
             <!-- <input :type="`checkbox`" :class="`setDeadline`" @click="setDeadline"
                 :checked="taskItem.isSetting || Boolean(taskItem.deadline)" ref="setDeadlineElement">截止时间 -->
-            <el-checkbox v-model="ElSetDeadline" @click="setDeadline" label="截止时间" border style="background-color:white; color:#589ef8"/>
-            <button :class="`deleteTask`" @click="clickDeleteTask">删除</button>
+            <el-checkbox v-model="ElSetDeadline" @click="setDeadline" label="截止时间" border
+                style="background-color:white; color:#589ef8" />
+            <!-- <button :class="`deleteTask`" @click="clickDeleteTask">删除</button> -->
+            <el-button :class="`deleteTask`" type="primary" plain @click="clickDeleteTask">删除</el-button>
         </div>
     </div>
 </template>
+<style scope>
+.el-checkbox {
+    position: relative;
+    top: 3px;
+}
+</style>

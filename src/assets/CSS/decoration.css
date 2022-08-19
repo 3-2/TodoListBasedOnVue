@@ -19,6 +19,10 @@
         background-color: #d2d2d2;
     }
 
+    #dividerGroupList {
+        border-bottom: 2px solid #c2c2c2;
+    }
+
     .groupName {
         font-size: 1rem;
     }
@@ -41,6 +45,10 @@
         color: red;
         bottom: 20vh;
         /* padding: auto 0; */
+    }
+
+    #dividerGroupList {
+        border-bottom: 1px solid black;
     }
 
     /* 取消portrait视图下，最后一个内置分组的下边框 */

@@ -1,15 +1,15 @@
 <script setup>
 import { reactive, onBeforeMount, ref, computed } from 'vue';
 import { Setting, Plus } from '@element-plus/icons-vue'
-
 import TaskContainer from './components/TaskContainer.vue';
 import GroupList from './components/groupList.vue'
+
 let reactiveStorage = reactive({ myStorageCenter: {} });
 const GroupName_defaultGroup = '默认分组';
 const GroupName_allTasks = '全部事项';
 const GroupName_TasksWithDeadline = '将要截止'
-let isSwitchingGroupsInPortrait = computed(() => { return reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait })
 
+// 数据结构
 function StorageCenter(obj) {
   this.userData = {
     taskItemData: [],
@@ -61,6 +61,10 @@ function GroupItem(data) {
   this.name = '未命名分组';
   Object.keys(data).map(p => this[p] = data[p]);
 }
+// Reactivity
+let isSwitchingGroupsInPortrait = computed(() => { return reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait })
+
+// DOM 引用
 const addTaskButton = ref();
 const TextBoxToAddNewTask = ref()
 
@@ -78,15 +82,19 @@ window.addEventListener('pagehide', function () { // 仅在关闭网页时备份
   reactiveStorage.myStorageCenter.userData.taskItemData.forEach(taskItem => { if (taskItem.deadline === '') taskItem.deadline = null })
   pauseToLocalStorage();
 });
+// 业务：横屏
 window.addEventListener('orientationchange', function () {
   if (isSwitchingGroupsInPortrait) reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait = false;
 })
+// 业务：抹掉数据
 function format() {
   localStorage.clear();
   reactiveStorage.myStorageCenter = {};
   location.reload();//刷新
 }
+// 业务：导入
 function exportData() { prompt('', JSON.stringify(reactiveStorage.myStorageCenter.userData)) }
+// 业务：导出
 function importData() {
   if (confirm('确定导入数据？警告：这会覆盖当前已有的数据。')) {
     try {
@@ -102,6 +110,7 @@ function importData() {
   }
 }
 
+// 事件 handler
 document.body.addEventListener('click', function (event) {
   if (event.target.closest('.taskItem') === null) { // 点击当前聚焦的任务之外的地方则关闭 taskOptions
     let isExsistedFocusingTask = document.querySelector('[displayTaskOptions]');
@@ -111,6 +120,7 @@ document.body.addEventListener('click', function (event) {
     }
   }
 })
+// v-on handler
 function clickAddGroup() {
   let userInput = prompt('请输入新分组的名称');
   if (userInput) {
@@ -147,6 +157,7 @@ function showClick() {
 </script>
 
 <template>
+  <!-- 左侧分组 -->
   <div :id="`sidebar`" :isSwitchingGroupsInPortrait="isSwitchingGroupsInPortrait" @click="clickSidebar">
     <GroupList :groupItemArray="reactiveStorage.myStorageCenter.userData.groupItemData"
       :storageCenter="reactiveStorage.myStorageCenter" />
@@ -170,13 +181,16 @@ function showClick() {
     </div>
 
   </div>
+  <!-- 右侧任务清单 -->
   <div :id="`right`" :isSwitchingGroupsInPortrait="isSwitchingGroupsInPortrait">
+    <!-- 清单顶部 -->
     <div :id="`topBar`">
       <div :id="`currentGorupName`">{{ reactiveStorage.myStorageCenter.userStatus.currentGroup }}</div>
       <el-button :id="`expandGroups`" ref="addTaskButton" plain @click="expandGroups" icon="Memo">
       </el-button>
       <!--当前分组的标题-->
     </div>
+    <!-- 清单中部 -->
     <div :id="`container`">
       <TaskContainer v-if="reactiveStorage.myStorageCenter.userStatus.currentGroup === GroupName_allTasks"
         :currentList="reactiveStorage.myStorageCenter.userData.taskItemData"
@@ -188,6 +202,7 @@ function showClick() {
         :currentList="reactiveStorage.myStorageCenter.userData.taskItemData.filter(e => e.group === reactiveStorage.myStorageCenter.userStatus.currentGroup)"
         :storageCenter="reactiveStorage.myStorageCenter" />
     </div>
+    <!-- 清单底部 -->
     <div :id="`blankBelowTaskList`"></div>
     <div :id="`underContainer`">
       <!-- 紧贴在所有事项的底部，末尾总是有的输入框 -->

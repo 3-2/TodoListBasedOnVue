@@ -2,7 +2,8 @@
 
 由 Visual Studio Code 折叠代码而来
 
-```<script setup>
+```Vue
+<script setup>
 import { reactive, onBeforeMount, ref, computed } from 'vue';
 import { Setting, Plus } from '@element-plus/icons-vue'
 import TaskContainer from './components/TaskContainer.vue';

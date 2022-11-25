@@ -4,12 +4,12 @@ import { Setting, Plus } from '@element-plus/icons-vue'
 import TaskContainer from './components/TaskContainer.vue';
 import GroupList from './components/groupList.vue'
 
-let reactiveStorage = reactive({ myStorageCenter: {} });
 const GroupName_defaultGroup = '默认分组';
 const GroupName_allTasks = '全部事项';
 const GroupName_TasksWithDeadline = '将要截止'
 
 // 数据结构
+let reactiveStorage = reactive({ myStorageCenter: {} });
 function StorageCenter(obj) {
   this.userData = {
     taskItemData: [],
@@ -40,7 +40,12 @@ StorageCenter.prototype.renameGroup = function (oldName, newName) {
     reactiveStorage.myStorageCenter.userStatus.currentGroup = newName;
   }
 };
-StorageCenter.prototype.isExistedGroupName = function (userInput) { let returnValue = false; reactiveStorage.myStorageCenter.userData.groupItemData.forEach(groupItem => { if (groupItem.name === userInput) returnValue = true; }); return returnValue; }
+StorageCenter.prototype.isExistedGroupName = function (userInput) {
+  let returnValue = false; reactiveStorage.myStorageCenter.userData.groupItemData.forEach(groupItem => {
+    if (groupItem.name === userInput) returnValue = true;
+  });
+  return returnValue;
+}
 function pauseToLocalStorage() {
   localStorage.setItem('pausedData', JSON.stringify(reactiveStorage.myStorageCenter));
 }
@@ -62,7 +67,9 @@ function GroupItem(data) {
   Object.keys(data).map(p => this[p] = data[p]);
 }
 // Reactivity
-let isSwitchingGroupsInPortrait = computed(() => { return reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait })
+let isSwitchingGroupsInPortrait = computed(() => {
+  return reactiveStorage.myStorageCenter.userStatus.isSwitchingGroupsInPortrait
+})
 
 // DOM 引用
 const addTaskButton = ref();
@@ -149,6 +156,7 @@ function clickAddTask() {
   }
   TextBoxToAddNewTask.value.value = '';
 }
+// Element Plus
 const dropdown1 = ref()
 function showClick() {
   dropdown1.value.handleOpen()
@@ -159,8 +167,10 @@ function showClick() {
 <template>
   <!-- 左侧分组 -->
   <div :id="`sidebar`" :isSwitchingGroupsInPortrait="isSwitchingGroupsInPortrait" @click="clickSidebar">
+    <!-- Child component：分组列表 -->
     <GroupList :groupItemArray="reactiveStorage.myStorageCenter.userData.groupItemData"
       :storageCenter="reactiveStorage.myStorageCenter" />
+    <!-- 分组列表底部 -->
     <div :id="`blankBelowGroupList`" @click="clickBlankBelowSidebar"></div>
     <div :id="`underGroupList`">
       <el-button :id="`addGroup`" type="primary" plain @click="clickAddGroup" :icon="Plus">
@@ -217,6 +227,7 @@ function showClick() {
 </template>
 
 <style scoped>
+/* CSS: Element Plus */
 .example-showcase .el-dropdown-link {
   cursor: pointer;
   color: var(--el-color-primary);

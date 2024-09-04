@@ -1,6 +1,6 @@
 ### [演示](https://3-2.github.io/TodoListBasedOnVue/)
 
-# Root Component 结构
+# 根组件结构
 
 由 Visual Studio Code 折叠代码而来
 
